@@ -1,30 +1,39 @@
 var express = require('express');
 var router = express.Router();
+var assert = require('assert');
+var Users = require('../models/users');
 
 router.use(function(req, res, next) {
-
-	// log each request to the console
-	console.log(req.method, req.url);
-
-	// continue doing what we were doing and go to the route
+	console.log('Time:', Date.now());
 	next();
 });
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
-	res.end();
+	res.render('pages/login');
 });
 
-router.get('/:id', function(req, res) {
-	res.send({
-		user : req.params.id
-	});	
+router.get('/:id', function(req, res, next) {
+	/*
+	 * res.send({ user : req.params.id });
+	 */
+	var err = new Error('Password Not matched');
+	err.status = 302;
+	next(err);
 });
 
-router.post('/', function(req, res) {
-	console.log(req.body.name);
-	console.log(req.body.age);
-	res.end();
+router.post('/signin', function(req, res, next) {
+	console.log("Request Received for SignnApi");
+
+});
+
+router.post('/signup', function(req, res, next) {	
+	Users.insertDocument(req,function(status){
+		if(status==1)
+			{
+				res.status(201).send("Account created successfully");
+			}		
+	});
 });
 
 router.put('/:id', function(req, res) {
