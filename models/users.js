@@ -1,4 +1,4 @@
-var database = require("../util/database");
+var database = require("../utils/database");
 var assert = require('assert');
 exports.insertDocument = function(req, callback) {
 	var db = database.getDBConn();

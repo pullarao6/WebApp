@@ -10,7 +10,8 @@ router.use(function(req, res, next) {
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
-	res.render('pages/login');
+	//res.render('pages/login');
+	res.send("hello");
 });
 
 router.get('/:id', function(req, res, next) {

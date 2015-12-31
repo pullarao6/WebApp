@@ -6,27 +6,16 @@
 var app = require('../app');
 var debug = require('debug')('myapp:server');
 var http = require('http');
-var database = require('../util/database');
-
-/**
- * Get port from environment and store in Express.
- */
+var database = require('../utils/database');
+var logger = require('../utils/logger');
 
 var port = normalizePort(process.env.PORT || '9090');
 app.set('port', port);
 
-/**
- * Create HTTP server.
- */
-
-// Initialize connection
-database.connect(function() {
-	console.log("Database Connection Pool Succesful");
-	server = http.createServer(app);
-
-	/**
-	 * Listen on provided port, on all network interfaces.
-	 */
+// Initialize DB connection
+database.connect(function() {	
+	logger.info("Database Connection Successful");	
+	server = http.createServer(app);	
 
 	server.listen(port);
 	server.on('error', onError);
@@ -39,8 +28,7 @@ database.connect(function() {
 function normalizePort(val) {
 	var port = parseInt(val, 10);
 	if (isNaN(port)) {
-		// named pipe
-		console.log("Inside if port");
+		// named pipe		
 		return val;
 	}
 
@@ -56,8 +44,8 @@ function normalizePort(val) {
  * Event listener for HTTP server "error" event.
  */
 
-function onError(error) {
-	if (error.syscall !== 'listen') {
+function onError(error) {	
+	if (error.syscall !== 'listen') {		
 		throw error;
 	}
 
@@ -66,14 +54,15 @@ function onError(error) {
 	// handle specific listen errors with friendly messages
 	switch (error.code) {
 	case 'EACCES':
-		console.error(bind + ' requires elevated privileges');
+		logger.error(bind + ' requires elevated privileges');
 		process.exit(1);
 		break;
-	case 'EADDRINUSE':
-		console.error(bind + ' is already in use');
+	case 'EADDRINUSE':		
+		logger.error(bind + ' is already in use');
 		process.exit(1);
 		break;
 	default:
+		logger.error(error);
 		throw error;
 	}
 }
@@ -85,5 +74,5 @@ function onError(error) {
 function onListening() {
 	var addr = server.address();
 	var bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port;
-	console.log('Listening on ' + bind);
+	logger.info('Listening on ' + bind);	
 }
