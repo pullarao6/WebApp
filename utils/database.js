@@ -1,6 +1,7 @@
 var mongodb = require('mongodb');
+var config = require('./config');
 var MongoClient = mongodb.MongoClient;
-var mongoUrl = 'mongodb://127.0.0.1:27017/sample';
+var mongoUrl = config.db_url + 'sample';
 var db;
 exports.connect = function(callback) {
 	MongoClient.connect(mongoUrl, function(err, database) {

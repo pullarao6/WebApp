@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 var assert = require('assert');
 var Users = require('../models/users');
-
+var config = require('../utils/config');
 router.use(function(req, res, next) {
 	console.log('Time:', Date.now());
 	next();
@@ -10,8 +10,7 @@ router.use(function(req, res, next) {
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
-	//res.render('pages/login');
-	res.send("hello");
+	res.render('pages/login',{https_url:'https://'+config.https_host + ':9090/'});	
 });
 
 router.get('/:id', function(req, res, next) {
@@ -20,7 +19,8 @@ router.get('/:id', function(req, res, next) {
 	 */
 	var err = new Error('Password Not matched');
 	err.status = 302;
-	next(err);
+	//next(err);
+	throw err;
 });
 
 router.post('/signin', function(req, res, next) {

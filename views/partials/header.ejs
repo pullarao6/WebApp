@@ -1,3 +1,6 @@
+<% console.log(https_url)%>
+<% var https_url=https_url %>
+<% var signin_url=https_url + '/signin'%>
 <nav class="navbar navbar-default navbar-fixed-top">
   <div class="container">
     <div class="navbar-header">
@@ -14,8 +17,8 @@
         <li><a href="#about">ABOUT</a></li>        
         <li><a href="#clients">CLIENT</a></li>        
         <li><a href="#contact">CONTACT</a></li>
-        <li><a href="/signup"><span class="glyphicon glyphicon-user"></span> Register</a></li>
-        <li><a href="/signin"><span class="glyphicon glyphicon-log-in"></span> SignIn</a></li>
+        <li><a href="https:localhost/signup"><span class="glyphicon glyphicon-user"></span> Register</a></li>
+        <li><a href=<%= signin_url %>><span class="glyphicon glyphicon-log-in"></span> SignIn</a></li>
       </ul>
     </div>
   </div>

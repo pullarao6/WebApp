@@ -19,12 +19,13 @@ var logger = new winston.Logger({
 		colorize : false
 	}), new winston.transports.Console({
 		level : 'debug',
+		handleException : true,
 		json : false,
 		colorize : false
-	}) ],
+	}) ]/*,
 	exceptionHandlers : [ new winston.transports.File({
 		filename : '../logs/filelog-exceptions.log'
-	}) ],
+	}) ]*/,
 	exitOnError : false
 });
 
