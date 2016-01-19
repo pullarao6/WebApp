@@ -2,7 +2,6 @@
 var http_app = require('../http-app');
 var https_app = require('../https-app');
 var config = require('./../utils/config');
-console.log('config '+ config.db_url);
 var debug = require('debug')('myapp:server');
 var http = require('http');
 var https = require('https');
@@ -10,25 +9,24 @@ var fs = require('fs');
 var database = require('../utils/database');
 var logger = require('../utils/logger');
 
-/*var http_port = normalizePort(process.env.PORT || 9090);
-var https_port = normalizePort(process.env.PORT || 3000);*/
-var http_port =  config.http_port;
-var https_port = config.https_port;
+var http_port = normalizePort(process.env.PORT || config.http.port);
+var https_port = normalizePort(process.env.PORT || config.https.port);
 http_app.set('port', http_port);
 https_app.set('port', https_port);
 var options = {
 	key : fs.readFileSync('./../trust-store/myapp.key'),
 	cert : fs.readFileSync('./../trust-store/myapp.crt')
 };
+
 // Initialize DB connection
 database.connect(function() {
 	logger.info("Database Connection Successful");
 	//HTTP Server
 	http_server = http.createServer(http_app);
-	http_server.listen(http_port,config.http_host);
+	http_server.listen(http_port,config.http.host);
 	//HTTPS Server
 	https_server = https.createServer(options, https_app);		
-	https_server.listen(https_port,config.https_host);
+	https_server.listen(https_port,config.https.host);
 	https_server.on('error', onError);
 	https_server.on('listening', onListening);	
 });

@@ -7,6 +7,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var routes = require('./routes/index');
 var products = require('./routes/products');
+var config = require('./utils/config');
 var app = express();
 var options = {
 	setHeaders : function(res, path) {
@@ -32,7 +33,9 @@ app.use(bodyParser.urlencoded({
 })); // support encoded bodies
 app.use('/', routes);
 app.use('/api/products', products);
-
+app.use('/signin',function(req,res,next){
+	 res.redirect('https://'+config.https.host+":"+config.https.port+"/signin");
+});
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
 	var err = new Error('Page Not Found');

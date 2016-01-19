@@ -7,10 +7,11 @@ router.use(function(req, res, next) {
 	console.log('Time:', Date.now());
 	next();
 });
-
 /* GET users listing. */
 router.get('/', function(req, res, next) {
-	res.render('pages/login',{https_url:'https://'+config.https_host + ':9090/'});	
+	res.render('pages/login', {
+		https_url : 'https://' + config.https_host + ':9090/'
+	});
 });
 
 router.get('/:id', function(req, res, next) {
@@ -19,7 +20,7 @@ router.get('/:id', function(req, res, next) {
 	 */
 	var err = new Error('Password Not matched');
 	err.status = 302;
-	//next(err);
+	// next(err);
 	throw err;
 });
 
@@ -28,12 +29,11 @@ router.post('/signin', function(req, res, next) {
 
 });
 
-router.post('/signup', function(req, res, next) {	
-	Users.insertDocument(req,function(status){
-		if(status==1)
-			{
-				res.status(201).send("Account created successfully");
-			}		
+router.post('/signup', function(req, res, next) {
+	Users.insertDocument(req, function(status) {
+		if (status == 1) {
+			res.status(201).send("Account created successfully");
+		}
 	});
 });
 
