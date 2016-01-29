@@ -14,22 +14,18 @@ var https_port = normalizePort(process.env.PORT || config.https.port);
 http_app.set('port', http_port);
 https_app.set('port', https_port);
 var options = {
-	key : fs.readFileSync('./../trust-store/myapp.key'),
-	cert : fs.readFileSync('./../trust-store/myapp.crt')
+	key : fs.readFileSync(__dirname + '/../trust-store/myapp.key'),
+	cert : fs.readFileSync(__dirname + '/../trust-store/myapp.crt')
 };
 
-// Initialize DB connection
-database.connect(function() {
-	logger.info("Database Connection Successful");
-	//HTTP Server
-	http_server = http.createServer(http_app);
-	http_server.listen(http_port,config.http.host);
-	//HTTPS Server
-	https_server = https.createServer(options, https_app);		
-	https_server.listen(https_port,config.https.host);
-	https_server.on('error', onError);
-	https_server.on('listening', onListening);	
-});
+//HTTP Server
+http_server = http.createServer(http_app);
+http_server.listen(http_port, config.http.host);
+//HTTPS Server
+https_server = https.createServer(options, https_app);
+https_server.listen(https_port, config.https.host);
+https_server.on('error', onError);
+https_server.on('listening', onListening);
 /**
  * Normalize a port into a number, string, or false.
  */

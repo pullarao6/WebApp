@@ -5,22 +5,37 @@ var morgan = require('morgan');
 var logger = require("./utils/logger");
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var passport = require('passport');
+var authController = require('./controllers/auth');
 var users = require('./routes/users');
+var clients = require('./routes/clients');
+var session = require('express-session');
+var oauth2 = require('./routes/oauth2');
+var products = require('./routes/products');
 var app = express();
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 logger.debug("Overriding 'Express' logger");
-app.use(morgan("default",{ "stream": logger.stream }));
+app.use(morgan("default", {
+	"stream" : logger.stream
+}));
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(cookieParser());
 app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({
 	extended : true
-})); // support encoded bodies
-app.use('/api/users', users);
-app.use('/signin',users);
-
+}));
+app.use(session({
+  secret: 'Super Secret Session Key'  
+}));
+app.use(passport.initialize());
+app.use(passport.session());
+app.use('/api/oauth2',oauth2);
+app.use('/api', users);
+app.use('/users', users);
+app.use('/api/clients',clients);
+app.use('/api',products);
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
 	var err = new Error('Page Not Found');
@@ -39,7 +54,7 @@ if (app.get('env') === 'development') {
 			res.status(404).sendFile(__dirname + '/public/images/404.jpg');
 		} else {
 			return next(err);
-		}		
+		}
 	});
 }
 
