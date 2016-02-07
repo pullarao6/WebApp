@@ -1,6 +1,5 @@
 #!/usr/bin/env node
-var http_app = require('../http-app');
-var https_app = require('../https-app');
+var app = require('../app');
 var config = require('./../utils/config');
 var debug = require('debug')('myapp:server');
 var http = require('http');
@@ -11,21 +10,21 @@ var logger = require('../utils/logger');
 
 var http_port = normalizePort(process.env.PORT || config.http.port);
 var https_port = normalizePort(process.env.PORT || config.https.port);
-http_app.set('port', http_port);
-https_app.set('port', https_port);
 var options = {
 	key : fs.readFileSync(__dirname + '/../trust-store/myapp.key'),
 	cert : fs.readFileSync(__dirname + '/../trust-store/myapp.crt')
 };
 
 //HTTP Server
-http_server = http.createServer(http_app);
+http_server = http.createServer(app);
 http_server.listen(http_port, config.http.host);
 //HTTPS Server
-https_server = https.createServer(options, https_app);
+https_server = https.createServer(options, app);
 https_server.listen(https_port, config.https.host);
 https_server.on('error', onError);
 https_server.on('listening', onListening);
+/*http_server.on('error', onError);
+http_server.on('listening', onListening);*/
 /**
  * Normalize a port into a number, string, or false.
  */

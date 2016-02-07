@@ -1,20 +1,22 @@
 var passport = require('passport');
 var BasicStrategy = require('passport-http').BasicStrategy;
+var BearerStrategy = require('passport-http-bearer').Strategy;
+var LocalStrategy = require('passport-local').Strategy;
 var User = require('../models/user');
 var Client = require('../models/client');
-var BearerStrategy = require('passport-http-bearer').Strategy
 var Token = require('../models/token');
-var passport = require('passport'), LocalStrategy = require('passport-local').Strategy;
+var passport = require('passport');
+var config = require('../utils/config');
 
 passport.serializeUser(function(user, done) {
-	console.log("In Serialize: "+user);
+	console.log("In Serialize: " + user);
 	done(null, user._id);
 });
 
-passport.deserializeUser(function(userid, done) {	
+passport.deserializeUser(function(userid, done) {
 	User.UserModel.findById(userid, function(err, user) {
-        done(err, user);
-    });
+		done(err, user);
+	});
 });
 
 passport.use(new BasicStrategy(function(username, password, callback) {
@@ -67,11 +69,9 @@ passport.use('client-basic', new BasicStrategy(function(username, password,
 }));
 
 passport.use(new BearerStrategy(function(accessToken, callback) {
-	console.log("1");
 	Token.findOne({
 		value : accessToken
 	}, function(err, token) {
-		console.log("2");
 		if (err) {
 			return callback(err);
 		}
@@ -84,7 +84,6 @@ passport.use(new BearerStrategy(function(accessToken, callback) {
 		User.UserModel.findOne({
 			_id : token.userId
 		}, function(err, user) {
-			console.log("3");
 			if (err) {
 				return callback(err);
 			}
@@ -101,7 +100,8 @@ passport.use(new BearerStrategy(function(accessToken, callback) {
 		});
 	});
 }));
-passport.use(new LocalStrategy(function(username, password, done) {
+passport.use('local-signin', new LocalStrategy({passReqToCallback : true},function(req,username, password,
+		done) {
 	User.UserModel.findOne({
 		email : username
 	}, function(err, user) {
@@ -139,8 +139,25 @@ exports.isClientAuthenticated = passport.authenticate('client-basic', {
 exports.isAuthenticated = passport.authenticate([ 'basic', 'bearer' ], {
 	session : false
 });
-exports.isUserAuthenticated = passport.authenticate('local', {
-	successRedirect : '/',
-	failureRedirect : '/users/signin',
-	failureFlash : false
-});
+exports.isUserAuthenticated = function(req, res, next) {
+	passport.authenticate('local-signin', function(err, user, info) {
+		if (err) {
+			return next(err);
+		}
+		if (!user) {			
+			return res.render('pages/signin', {
+				https_url : 'https://' + config.https.host + ':' + config.https.port
+				+ '/',
+				http_url : 'http://' + config.http.host + ':' + config.http.port + '/',
+				message : "Invalid Username or Password"
+			});
+		}
+
+		req.logIn(user, function(err) {			
+			if (err) {
+				return next(err);
+			}			
+			return res.redirect('/');			
+		});
+	})(req, res, next);
+};

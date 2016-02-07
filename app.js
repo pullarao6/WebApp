@@ -2,14 +2,44 @@ var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
 var morgan = require('morgan');
-var logger = require("./utils/logger");
 var cookieParser = require('cookie-parser');
+var session = require('express-session');
+var MongoStore = require('connect-mongo')(session);
 var bodyParser = require('body-parser');
-var routes = require('./routes/index');
-var users = require('./routes/users');
-var products = require('./routes/products');
+var passport = require('passport');
+var mongoose = require('mongoose');
+var moment = require('moment');
+
 var app = express();
-var options = {
+var logger = require("./utils/logger");
+var authController = require('./controllers/auth');
+var index = require('./routes/index');
+var users = require('./routes/users');
+var clients = require('./routes/clients');
+var oauth2 = require('./routes/oauth2');
+var products = require('./routes/products');
+var config = require('./utils/config');
+
+var d = new Date();
+d.setTime(d.getTime() + (2 * 24 * 60 * 60 * 1000));
+console.log(d);
+var session_options = {
+	cookie : {
+		expires : d,
+		httpOnly : true,
+		secure : false,
+	},
+	name : 'ESID',
+	secret : 'pop and lol are friends',
+	resave : false,
+	saveUnintialized : false,
+	store : new MongoStore({
+		mongooseConnection : mongoose.connection,
+		touchAfter : 24 * 3600, // time period in seconds
+		autoRemove : 'disabled'
+	})
+};
+var static_options = {
 	setHeaders : function(res, path) {
 		if (path.indexOf("download") !== -1) {
 			res.attachment(path);
@@ -18,29 +48,35 @@ var options = {
 	redirect : true,
 	index : false
 };
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
-logger.debug("Overriding 'Express' logger");
-app.use(morgan("default",{ "stream": logger.stream }));
+/*app.use(morgan("default", {
+	"stream" : logger.stream
+}));*/
+app.use(express.static(path.join(__dirname, 'public'), static_options));
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
-app.use(express.static(path.join(__dirname, 'public'), options));
-//app.use(logger('dev'));
 app.use(cookieParser());
+app.use(session(session_options));
 app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({
 	extended : true
-})); // support encoded bodies
-app.use('/', routes);
-app.use('/api/users', users);
-app.use('/signin',users);
-app.use('/api/products', products);
-
+}));
+app.use(passport.initialize());
+app.use(passport.session());
+app.use('/', index);
+app.use('/api/oauth2', oauth2);
+app.use('/api', users);
+app.use('/users', users);
+app.use('/api/clients', clients);
+app.use('/api', products);
+app.use('/products' ,products);
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
 	var err = new Error('Page Not Found');
 	err.status = 404;
-	next(err);
+	next(err);	
 });
 
 // error handlers
@@ -48,13 +84,15 @@ app.use(function(req, res, next) {
 // will print stacktrace
 if (app.get('env') === 'development') {
 	app.use(function(err, req, res, next) {
+		console.log(err);
 		console.log("In Dev Error Handler");
 		if (err.status === 404) {
 			console.log("Page Not Found");
 			res.status(404).sendFile(__dirname + '/public/images/404.jpg');
 		} else {
-			return next(err);
-		}		
+			//res.status(err.status || 500).send(err);
+			next(err);
+		}
 	});
 }
 
