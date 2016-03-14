@@ -1,0 +1,7 @@
+/.settings
+/logs
+/node_modules
+/.project
+/.jshintrc
+/.tern-project
+/test-reports.xml
