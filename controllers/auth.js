@@ -2,21 +2,24 @@ var passport = require('passport');
 var BasicStrategy = require('passport-http').BasicStrategy;
 var BearerStrategy = require('passport-http-bearer').Strategy;
 var LocalStrategy = require('passport-local').Strategy;
-var User = require('../models/user');
 var Client = require('../models/client');
 var Token = require('../models/token');
-var passport = require('passport');
 var config = require('../utils/config');
+var logger = require('../utils/logger');
+var myapp_common = require('myapp-common');
+var Manf = myapp_common.manf;
 
-passport.serializeUser(function(user, done) {
-	console.log("In Serialize: " + user);
-	done(null, user._id);
+passport.serializeUser(function(user, done) {	
+	done(null, user.manf_id);
 });
 
 passport.deserializeUser(function(userid, done) {
-	User.UserModel.findById(userid, function(err, user) {
-		done(err, user);
-	});
+	Manf.findManfByTinId(userid, function(err,res) {
+		if(err)
+			done(err);
+		else
+			done(null,res);
+	})
 });
 
 passport.use(new BasicStrategy(function(username, password, callback) {
@@ -100,36 +103,42 @@ passport.use(new BearerStrategy(function(accessToken, callback) {
 		});
 	});
 }));
+
 passport.use('local-signin', new LocalStrategy({passReqToCallback : true},function(req,username, password,
 		done) {
-	User.UserModel.findOne({
-		email : username
-	}, function(err, user) {
-		if (err) {
-			return done(err);
+	Manf.checkManfByEmailAndPassword(req.body, function(err, manf) {
+		if(err)
+			done(err);
+		else
+		{
+		 if(manf)
+			 done(null,manf);
 		}
-		if (!user) {
-			return done(null, false, {
-				message : 'Incorrect username.'
-			});
-		}
-		user.verifyPassword(password, function(err, isMatch) {
-			if (err) {
-				return done(err);
-			}
-
-			// Password did not match
-			if (!isMatch) {
-				return done(null, false, {
-					message : 'Incorrect password.'
-				});
-			}
-
-			// Success
-			return done(null, user);
-		});
 	});
+}));	
+	
+passport.use('local-signup', new LocalStrategy({
+    // by default, local strategy uses username and password, we will override with email
+    usernameField : 'tin',
+    passwordField : 'password',
+    passReqToCallback : true // allows us to pass back the entire request to the callback
+},
+function(req, tin, password, done) {
+	
+		logger.log('debug','saving the user in db');
+    	Manf.saveManf(req.body,function(err, res){    		
+    		if(err)
+    			return done(err);
+    		if(res === "already exists"){    			
+    			return done(null, false, "user already exists");}
+    		else if(res){    			
+    			return done(null, res);}
+    			    	
+    	});        
+
 }));
+
+
 exports.isBearerAuthenticated = passport.authenticate('bearer', {
 	session : false
 });
@@ -139,24 +148,56 @@ exports.isClientAuthenticated = passport.authenticate('client-basic', {
 exports.isAuthenticated = passport.authenticate([ 'basic', 'bearer' ], {
 	session : false
 });
-exports.isUserAuthenticated = function(req, res, next) {
-	passport.authenticate('local-signin', function(err, user, info) {
-		if (err) {
+
+exports.saveUser = function(req, res, next){	
+	passport.authenticate('local-signup', function(err, manf, info) {
+		if(err){			
 			return next(err);
 		}
-		if (!user) {			
-			return res.render('pages/signin', {
+		if(!manf)
+			{
+			logger.log('error',"Signup Error as user already exists with::"+req.body.email);
+			return res.render('pages/signup', {
 				https_url : 'https://' + config.https.host + ':' + config.https.port
 				+ '/',
 				http_url : 'http://' + config.http.host + ':' + config.http.port + '/',
-				message : "Invalid Username or Password"
+				message : info
 			});
-		}
+			}
+		logger.log('info',"Successful Sign up for the user");
+		req.login(manf, function(err) {			
+			logger.debug('Started Saving the session for::'+req.body.email);
+			if (err) {				
+				return next(err);
+			}
+		logger.debug('signup session success for the user::'+req.body.email);			
+			return res.redirect('/');
+	});
+	})(req, res, next);
+};
 
-		req.logIn(user, function(err) {			
+exports.isUserAuthenticated = function(req, res, next) {
+	passport.authenticate('local-signin', function(err, manf, info) {
+		if (err) {
+			if(err.message === "invalid username or password")
+			{
+				logger.log('error',"Invalid Username and password for the request::");
+				return res.render('pages/signin', {
+					https_url : 'https://' + config.https.host + ':' + config.https.port
+					+ '/',
+					http_url : 'http://' + config.http.host + ':' + config.http.port + '/',
+					message : "Invalid Username or Password"
+				});
+			}
+			else
+				next(err);
+		}		
+		req.login(manf, function(err) {
+			logger.debug("Successful Signin And Saving the user in the session::"+manf.email);
 			if (err) {
 				return next(err);
-			}			
+			}
+			logger.debug("Successfully saved the session for::"+manf.email);
 			return res.redirect('/');			
 		});
 	})(req, res, next);

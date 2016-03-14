@@ -4,13 +4,14 @@ var assert = require('assert');
 var config = require('../utils/config');
 var userController = require('../controllers/user');
 var authController = require('../controllers/auth');
+
 router.use(function(req, res, next) {
 	console.log('Time:', Date.now());
 	next();
 });
-function isLoggedIn(req, res, next) {
 
-	console.log(req.isAuthenticated);
+function isLoggedIn(req, res, next) {
+	
 	// if user is authenticated in the session, carry on
 	if (!req.isAuthenticated())
 		return next();
@@ -48,9 +49,16 @@ router.get('/signup', function(req, res, next) {
 	});
 })
 
-router.post('/signin', authController.isUserAuthenticated);
+router.post('/signin', userController.checkUser);
 
-router.post('/users/signup', userController.postUsers);
+router.post('/signup', userController.saveUser);
+
+//router.post('/users/signup', authController.signup);
+
+router.get('/logout', function(req, res) {
+    req.logout();
+    res.redirect('/');
+});
 
 router.put('/:id', function(req, res) {
 

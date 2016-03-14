@@ -8,7 +8,6 @@ var MongoStore = require('connect-mongo')(session);
 var bodyParser = require('body-parser');
 var passport = require('passport');
 var mongoose = require('mongoose');
-var moment = require('moment');
 
 var app = express();
 var logger = require("./utils/logger");
@@ -22,7 +21,7 @@ var config = require('./utils/config');
 
 var d = new Date();
 d.setTime(d.getTime() + (2 * 24 * 60 * 60 * 1000));
-console.log(d);
+logger.debug('Current Time is::'+d);
 var session_options = {
 	cookie : {
 		expires : d,
@@ -30,7 +29,7 @@ var session_options = {
 		secure : false,
 	},
 	name : 'ESID',
-	secret : 'pop and lol are friends',
+	secret : 'pop and kim are friends',
 	resave : false,
 	saveUnintialized : false,
 	store : new MongoStore({
@@ -72,6 +71,16 @@ app.use('/users', users);
 app.use('/api/clients', clients);
 app.use('/api', products);
 app.use('/products' ,products);
+
+var converter = require("./utils/converter");
+app.get("/rgbToHex", function(req, res, next){
+	var red = parseInt(req.query.red, 10);
+	var green = parseInt(req.query.green, 10);
+	var blue = parseInt(req.query.blue, 10);
+	var hex = converter.rgbToHex(red, green, blue);
+	
+	res.send(hex);
+})
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
 	var err = new Error('Page Not Found');
@@ -87,7 +96,7 @@ if (app.get('env') === 'development') {
 		console.log(err);
 		console.log("In Dev Error Handler");
 		if (err.status === 404) {
-			console.log("Page Not Found");
+			logger.error("Page Not Found");
 			res.status(404).sendFile(__dirname + '/public/images/404.jpg');
 		} else {
 			//res.status(err.status || 500).send(err);

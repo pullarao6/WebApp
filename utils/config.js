@@ -1,11 +1,11 @@
 var config = {};
 config.https = {};
-config.https.host = 'localhost';
+config.https.host = '127.0.0.1';
 config.https.port = 9090;
 config.http = {};
-config.http.host = 'localhost';
+config.http.host = '127.0.0.1';
 config.http.port = 8080;
 config.mongo = {};
 config.mongo.url = 'mongodb://127.0.0.1:27017/';
-config.mongo.db = 'sample';
+config.mongo.db_name = 'sample';
 module.exports = config;

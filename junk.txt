@@ -26,3 +26,22 @@
     <script src="js/bootstrap.min.js"></script>
   </body>
 </html>
+
+
+new winston.transports.File({
+		name : 'error-file',
+		level : 'error',
+		filename : __dirname + '/../logs/filelog-error.log',
+		json : true,
+		maxsize : 5242880, // 5MB
+		maxFiles : 5,
+		humanReadableUnhandledException: true
+	}), new winston.transports.File({
+		name : 'info-file',
+		level : 'info',
+		filename : __dirname + '/../logs/filelog-info.log',
+		json : true,
+		maxsize : 5242880, // 5MB
+		maxFiles : 5,
+		colorize : false
+	}),

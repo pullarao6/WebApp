@@ -1,27 +1,27 @@
 var winston = require('winston');
+var winston_mongodb = require('winston-mongodb').MongoDB;
+var config = require('../utils/config');
 winston.emitErrs = true;
+var database = require('./database');
+var mongoUrl = config.mongo.url + config.mongo.db_name;
 
 var logger = new winston.Logger({
-	transports : [ new winston.transports.File({
-		name : 'error-file',
-		level : 'error',
-		filename : __dirname + '/../logs/filelog-error.log',
-		json : true,
-		maxsize : 5242880, // 5MB
-		maxFiles : 5
-	}), new winston.transports.File({
-		name : 'info-file',
-		level : 'info',
-		filename : __dirname + '/../logs/filelog-info.log',
-		json : true,
-		maxsize : 5242880, // 5MB
-		maxFiles : 5,
-		colorize : false
-	}), new winston.transports.Console({
+	transports : [ 
+		new winston.transports.MongoDB({
+			name:'info-logs',
+			level: 'info',
+			handleException : true,
+			json : true,
+			db : mongoUrl,
+			collection : "log",
+			storeHost : true
+		  })
+	   , new winston.transports.Console({
 		level : 'debug',
 		handleException : true,
 		json : false,
-		colorize : false
+		colorize : true,
+		humanReadableUnhandledException: true
 	}) ]/*
 		 * , exceptionHandlers : [ new winston.transports.File({ filename :
 		 * '../logs/filelog-exceptions.log' }) ]

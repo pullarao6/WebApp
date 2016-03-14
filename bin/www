@@ -15,14 +15,17 @@ var options = {
 	cert : fs.readFileSync(__dirname + '/../trust-store/myapp.crt')
 };
 
-//HTTP Server
-http_server = http.createServer(app);
-http_server.listen(http_port, config.http.host);
-//HTTPS Server
-https_server = https.createServer(options, app);
-https_server.listen(https_port, config.https.host);
-https_server.on('error', onError);
-https_server.on('listening', onListening);
+//database.makeDBConnection(function(db){
+    //HTTP Server	
+	http_server = http.createServer(app);
+	http_server.listen(http_port, config.http.host);
+	//HTTPS Server
+	https_server = https.createServer(options, app);
+	https_server.listen(https_port, config.https.host);
+	https_server.on('error', onError);
+	https_server.on('listening', onListening);
+//});
+
 /*http_server.on('error', onError);
 http_server.on('listening', onListening);*/
 /**

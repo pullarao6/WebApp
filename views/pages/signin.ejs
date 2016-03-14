@@ -83,6 +83,9 @@
 		</div>
 
 		<div id="signupbox" style="display: none; margin-top: 50px">
+			<% if (message.length > 0) { %>
+			<div class="alert alert-danger"><%= message %></div>
+			<% } %>
 			<div class="panel panel-info">
 				<div class="panel-heading">
 					<div class="panel-title">Sign Up</div>
@@ -95,7 +98,7 @@
 				</div>
 				<div class="panel-body">
 					<form id="signupform" class="form-horizontal" role="form"
-						action="/api/users/signup" method="post"
+						action="/users/signup" method="post"
 						enctype="application/x-www-form-urlencoded">
 						<div id="left-signupbox" class="col-md-6">
 							<div id="signupalert" style="display: none"

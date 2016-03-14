@@ -1,6 +1,6 @@
 var mongoose = require('mongoose');
 var config = require('./config');
-var mongoUrl = config.mongo.url + config.mongo.db;
+var mongoUrl = config.mongo.url + config.mongo.db_name;
 var db = mongoose.connection;
 mongoose.connect(mongoUrl);
 db.on('error', function(err) {

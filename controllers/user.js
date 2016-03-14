@@ -1,17 +1,16 @@
-// grab the user model
-var user = require('../models/user');
+var authController = require('../controllers/auth');
+var logger = require('../utils/logger');    
 // create a new user
-exports.postUsers = function(req, res) {
-	user.postUsers(req, res);
+exports.saveUser = function(req, res, next) {
+	logger.info("Request Received for saving a user::"+req.body.email,{request:req.body});
+	authController.saveUser(req, res, next);
 };
-exports.checkUser = function(req, res) {
-	user.checkUser(req, res, function(status) {
-		if (status === 1) {			
-			res.send("Login Success");
-		} else
-			res.send("Login Failed");
-	});
+
+//signin
+exports.checkUser = function(req, res, next) {
+	authController.isUserAuthenticated(req, res, next);
 };
+
 exports.getUser = function(req, res) {
 	user.getUser(req, res, function(err, user_details, status) {
 		if (status)
