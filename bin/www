@@ -1,12 +1,13 @@
 #!/usr/bin/env node
-var app = require('../app');
-var config = require('./../utils/config');
-var debug = require('debug')('myapp:server');
+process.env.NODE_ENV = process.env.NODE_ENV || 'development';
+var app = require('../app/config/express');
+var config = require('../app/config/config');
 var http = require('http');
 var https = require('https');
 var fs = require('fs');
-var database = require('../utils/database');
-var logger = require('../utils/logger');
+var database = require('../app/utils/database');
+var logger = require('../app/utils/logger');
+logger.debug("Environment::"+process.env.NODE_ENV);
 
 var http_port = normalizePort(process.env.PORT || config.http.port);
 var https_port = normalizePort(process.env.PORT || config.https.port);
@@ -78,7 +79,7 @@ function onError(error) {
  * Event listener for HTTP server "listening" event.
  */
 
-function onListening() {
+function onListening() {	
 	var addr = https_server.address();
 	var bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port;
 	logger.info('Listening on ' + bind);

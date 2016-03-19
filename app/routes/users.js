@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var assert = require('assert');
-var config = require('../utils/config');
+var config = require('../config/config.js');
 var userController = require('../controllers/user');
 var authController = require('../controllers/auth');
 

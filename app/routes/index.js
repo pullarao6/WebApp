@@ -1,7 +1,7 @@
 var express = require('express');
 var hello = require('helloworld');
 var router = express.Router();
-var config = require('../utils/config');
+var config = require('../config/config.js');
 var authController = require('../controllers/auth');
 /* GET home page. */
 function isLoggedIn(req, res, next) {

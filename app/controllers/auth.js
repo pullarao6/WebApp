@@ -4,7 +4,7 @@ var BearerStrategy = require('passport-http-bearer').Strategy;
 var LocalStrategy = require('passport-local').Strategy;
 var Client = require('../models/client');
 var Token = require('../models/token');
-var config = require('../utils/config');
+var config = require('../config/config.js');
 var logger = require('../utils/logger');
 var myapp_common = require('myapp-common');
 var Manf = myapp_common.manf;
@@ -26,7 +26,7 @@ passport.use(new BasicStrategy(function(username, password, callback) {
 	User.UserModel.findOne({
 		email : username
 	}, function(err, user) {
-		if (err) {
+		if (err) {			
 			return callback(err);
 		}
 
@@ -111,8 +111,8 @@ passport.use('local-signin', new LocalStrategy({passReqToCallback : true},functi
 			done(err);
 		else
 		{
-		 if(manf)
-			 done(null,manf);
+		 if(manf){			 
+			 done(null,manf);}
 		}
 	});
 }));	

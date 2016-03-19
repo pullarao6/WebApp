@@ -8,20 +8,21 @@ var MongoStore = require('connect-mongo')(session);
 var bodyParser = require('body-parser');
 var passport = require('passport');
 var mongoose = require('mongoose');
+var compress = require('compression');
+var config = require('./config');
 
 var app = express();
-var logger = require("./utils/logger");
-var authController = require('./controllers/auth');
-var index = require('./routes/index');
-var users = require('./routes/users');
-var clients = require('./routes/clients');
-var oauth2 = require('./routes/oauth2');
-var products = require('./routes/products');
-var config = require('./utils/config');
+var logger = require("../utils/logger");
+var authController = require('../controllers/auth');
+var index = require('../routes/index');
+var users = require('../routes/users');
+var clients = require('../routes/clients');
+var oauth2 = require('../routes/oauth2');
+var products = require('../routes/products');
 
 var d = new Date();
 d.setTime(d.getTime() + (2 * 24 * 60 * 60 * 1000));
-logger.debug('Current Time is::'+d);
+logger.debug('Current Time is::' + d);
 var session_options = {
 	cookie : {
 		expires : d,
@@ -29,7 +30,7 @@ var session_options = {
 		secure : false,
 	},
 	name : 'ESID',
-	secret : 'pop and kim are friends',
+	secret : config.sessionSecret,
 	resave : false,
 	saveUnintialized : false,
 	store : new MongoStore({
@@ -49,13 +50,20 @@ var static_options = {
 };
 
 // view engine setup
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', path.join(__dirname, '..' ,'views'));
 app.set('view engine', 'ejs');
-/*app.use(morgan("default", {
-	"stream" : logger.stream
-}));*/
-app.use(express.static(path.join(__dirname, 'public'), static_options));
-app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
+
+if (process.env.NODE_ENV === 'development') {
+	app.use(morgan("default", {
+		"stream" : logger.stream
+		}));
+}
+if (process.env.NODE_ENV === 'production') {
+	app.use(compress());
+}
+app.use(express.static(path.join(__dirname, '..', '..', 'public'), static_options));
+app.use(favicon(path.join(__dirname, '..', '..', 'public', 'favicon.ico')));
+
 app.use(cookieParser());
 app.use(session(session_options));
 app.use(bodyParser.json()); // support json encoded bodies
@@ -70,22 +78,22 @@ app.use('/api', users);
 app.use('/users', users);
 app.use('/api/clients', clients);
 app.use('/api', products);
-app.use('/products' ,products);
+app.use('/products', products);
 
-var converter = require("./utils/converter");
-app.get("/rgbToHex", function(req, res, next){
+var converter = require("../utils/converter");
+app.get("/rgbToHex", function(req, res, next) {
 	var red = parseInt(req.query.red, 10);
 	var green = parseInt(req.query.green, 10);
 	var blue = parseInt(req.query.blue, 10);
 	var hex = converter.rgbToHex(red, green, blue);
-	
+
 	res.send(hex);
 })
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
 	var err = new Error('Page Not Found');
 	err.status = 404;
-	next(err);	
+	next(err);
 });
 
 // error handlers
@@ -97,9 +105,9 @@ if (app.get('env') === 'development') {
 		console.log("In Dev Error Handler");
 		if (err.status === 404) {
 			logger.error("Page Not Found");
-			res.status(404).sendFile(__dirname + '/public/images/404.jpg');
+			res.status(404).sendFile('../..' + '/public/images/404.jpg');
 		} else {
-			//res.status(err.status || 500).send(err);
+			// res.status(err.status || 500).send(err);
 			next(err);
 		}
 	});
@@ -112,5 +120,4 @@ if (app.get('env') === 'development') {
  * 
  * app.use(prodErrorHandler);
  */
-
 module.exports = app;

@@ -1,6 +1,6 @@
 var winston = require('winston');
 var winston_mongodb = require('winston-mongodb').MongoDB;
-var config = require('../utils/config');
+var config = require('../config/config.js');
 winston.emitErrs = true;
 var database = require('./database');
 var mongoUrl = config.mongo.url + config.mongo.db_name;

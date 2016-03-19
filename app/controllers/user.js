@@ -1,4 +1,4 @@
-var authController = require('../controllers/auth');
+var authController = require('./auth');
 var logger = require('../utils/logger');    
 // create a new user
 exports.saveUser = function(req, res, next) {
