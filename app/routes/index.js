@@ -3,17 +3,10 @@ var hello = require('helloworld');
 var router = express.Router();
 var config = require('../config/config.js');
 var authController = require('../controllers/auth');
+var utility = require('../utils/utility');
+
 /* GET home page. */
-function isLoggedIn(req, res, next) {
 
-	console.log(req.isAuthenticated);
-    // if user is authenticated in the session, carry on 
-    if (req.isAuthenticated())
-        return next();
-
-    // if they aren't redirect them to the home page
-    res.redirect('/users/signin');
-}
 
 router.get('/', function(req, res, next) {
 	if (req.socket.encrypted === undefined) {
@@ -29,5 +22,5 @@ router.get('/', function(req, res, next) {
 	});
 });
 
-router.get('/',isLoggedIn,function(req,res){console.log(hello);res.send(hello);});
+router.get('/', utility.isLoggedIn, function(req,res){console.log(hello);res.send(hello);});
 module.exports = router;

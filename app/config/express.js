@@ -19,10 +19,17 @@ var users = require('../routes/users');
 var clients = require('../routes/clients');
 var oauth2 = require('../routes/oauth2');
 var products = require('../routes/products');
+var chat = require('../routes/chat');
 
 var d = new Date();
 d.setTime(d.getTime() + (2 * 24 * 60 * 60 * 1000));
 logger.debug('Current Time is::' + d);
+var mongoStore = new MongoStore({
+	mongooseConnection : mongoose.connection,
+	touchAfter : 24 * 3600, // time period in seconds
+	autoRemove : 'disabled'
+});
+
 var session_options = {
 	cookie : {
 		expires : d,
@@ -33,11 +40,7 @@ var session_options = {
 	secret : config.sessionSecret,
 	resave : false,
 	saveUnintialized : false,
-	store : new MongoStore({
-		mongooseConnection : mongoose.connection,
-		touchAfter : 24 * 3600, // time period in seconds
-		autoRemove : 'disabled'
-	})
+	store : mongoStore
 };
 var static_options = {
 	setHeaders : function(res, path) {
@@ -79,6 +82,7 @@ app.use('/users', users);
 app.use('/api/clients', clients);
 app.use('/api', products);
 app.use('/products', products);
+app.use('/chat', chat);
 
 var converter = require("../utils/converter");
 app.get("/rgbToHex", function(req, res, next) {
@@ -105,7 +109,7 @@ if (app.get('env') === 'development') {
 		console.log("In Dev Error Handler");
 		if (err.status === 404) {
 			logger.error("Page Not Found");
-			res.status(404).sendFile('../..' + '/public/images/404.jpg');
+			res.status(404).sendFile(path.join(__dirname, '..', '..', 'public','images','404.jpg'));
 		} else {
 			// res.status(err.status || 500).send(err);
 			next(err);
@@ -120,4 +124,5 @@ if (app.get('env') === 'development') {
  * 
  * app.use(prodErrorHandler);
  */
-module.exports = app;
+module.exports.app = app;
+module.exports.mongoStore = mongoStore;

@@ -1,0 +1,20 @@
+<!doctype html>
+  <html>
+   <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' type='text/css'/>
+    <!-- <script src="http://cdn.socket.io/socket.io-1.2.0.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script> -->
+    <script src="/javascripts/socket.io-1.4.5.js"></script>
+    <script src="/javascripts/jquery-1.11.1.js"></script>    
+    <script src="/javascripts/chat.js"></script>
+  </head>
+  <body>
+    <ul id="messages"></ul>
+    <span id="notifyUser"></span>
+    <form id="form" action="" onsubmit="return submitfunction();" >
+      <input type="hidden" id="user" value="" />
+      <input type= "text" id="m" autocomplete="off" onkeyup="notifyTyping();" placeholder="Type yor message here.." /><input type="submit" id="button" value="Send"/>
+    </form>
+  </body>
+</html>

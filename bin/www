@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
-var app = require('../app/config/express');
+var express = require('../app/config/express');
+var app = express.app;
+var mongoStore = express.mongoStore;
 var config = require('../app/config/config');
 var http = require('http');
 var https = require('https');
@@ -25,6 +27,7 @@ var options = {
 	https_server.listen(https_port, config.https.host);
 	https_server.on('error', onError);
 	https_server.on('listening', onListening);
+	require('../app/config/socketio')(https_server, mongoStore);
 //});
 
 /*http_server.on('error', onError);
