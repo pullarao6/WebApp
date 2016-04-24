@@ -1,5 +1,6 @@
 module.exports = {
-sessionSecret: 'developmentSessionSecret',
+sessionSecret: 'ChillAndHaveFun',
+superSecret: 'ILoveYouNodejs',
 http: {
 	host : '127.0.0.1',
 	port : 8080

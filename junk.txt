@@ -45,3 +45,19 @@ new winston.transports.File({
 		maxFiles : 5,
 		colorize : false
 	}),
+	
+	new winston.transports.MongoDB({
+			name:'info-logs',
+			level: 'info',
+			handleException : true,
+			json : true,
+			db : mongoUrl,
+			collection : "log",
+			storeHost : true
+		  })
+	   ,
+
+Object.keys(cluster.workers).forEach(function(id) {
+	    console.log("Child id is::::::::"+id);
+	    console.log("I am running with pid : "+cluster.workers[id].process.pid);	    
+	  });	   

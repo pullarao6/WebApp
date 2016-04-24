@@ -123,8 +123,7 @@ passport.use('local-signup', new LocalStrategy({
     passwordField : 'password',
     passReqToCallback : true // allows us to pass back the entire request to the callback
 },
-function(req, tin, password, done) {
-	
+function(req, tin, password, done) {	
 		logger.log('debug','saving the user in db');
     	Manf.saveManf(req.body,function(err, res){    		
     		if(err)
@@ -157,22 +156,11 @@ exports.saveUser = function(req, res, next){
 		if(!manf)
 			{
 			logger.log('error',"Signup Error as user already exists with::"+req.body.email);
-			return res.render('pages/signup', {
-				https_url : 'https://' + config.https.host + ':' + config.https.port
-				+ '/',
-				http_url : 'http://' + config.http.host + ':' + config.http.port + '/',
-				message : info
-			});
+			return res.status(400).json({state: false,'reason':'user already exists'});
 			}
-		logger.log('info',"Successful Sign up for the user");
-		req.login(manf, function(err) {			
-			logger.debug('Started Saving the session for::'+req.body.email);
-			if (err) {				
-				return next(err);
-			}
+		logger.log('info',"Successful Sign up for the user");		
 		logger.debug('signup session success for the user::'+req.body.email);			
-			return res.redirect('/');
-	});
+		return res.json({state: true});
 	})(req, res, next);
 };
 
@@ -186,7 +174,7 @@ exports.isUserAuthenticated = function(req, res, next) {
 					https_url : 'https://' + config.https.host + ':' + config.https.port
 					+ '/',
 					http_url : 'http://' + config.http.host + ':' + config.http.port + '/',
-					message : "Invalid Username or Password"
+					message : "Invalid Username or Password"					
 				});
 			}
 			else

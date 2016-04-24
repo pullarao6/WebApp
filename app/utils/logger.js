@@ -2,21 +2,20 @@ var winston = require('winston');
 var winston_mongodb = require('winston-mongodb').MongoDB;
 var config = require('../config/config.js');
 winston.emitErrs = true;
-var database = require('./database');
-var mongoUrl = config.mongo.url + config.mongo.db_name;
 
 var logger = new winston.Logger({
 	transports : [ 
-		new winston.transports.MongoDB({
-			name:'info-logs',
-			level: 'info',
-			handleException : true,
-			json : true,
-			db : mongoUrl,
-			collection : "log",
-			storeHost : true
-		  })
-	   , new winston.transports.Console({
+		new winston.transports.File({
+		name : 'info-file',
+		level : 'info',	
+		filename : __dirname + '/../../logs/filelog-info.log',
+		json : true,
+		maxsize : 1242880, // 5MB
+		maxFiles : 5,
+		colorize : false,
+		timestamp : true
+	}),
+		new winston.transports.Console({
 		level : 'debug',
 		handleException : true,
 		json : false,

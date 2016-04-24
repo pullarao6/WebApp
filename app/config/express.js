@@ -77,11 +77,9 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use('/', index);
 app.use('/api/oauth2', oauth2);
-app.use('/api', users);
-app.use('/users', users);
+app.use('/api/users', users);
 app.use('/api/clients', clients);
-app.use('/api', products);
-app.use('/products', products);
+app.use('/api/products', products);
 app.use('/chat', chat);
 
 var converter = require("../utils/converter");
