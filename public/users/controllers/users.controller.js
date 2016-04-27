@@ -3,7 +3,7 @@ angular.module('users')
 	       function($scope, $location, $localStorage, Auth){
 				function successAuth(res) {				
 		            $localStorage.token = res.token;
-		            window.location = "/";
+		            //window.location = "/";
 				}	
 				$scope.signupSubmit = function(){					
 					var formData = $scope.person;
@@ -26,8 +26,7 @@ angular.module('users')
 		            //window.location = "/";
 				}
 				$scope.signinSubmit = function(){
-					var formData = $scope.person;
-					console.log(formData.username);
+					var formData = $scope.person;					
 					Auth.signin(formData,successAuth,function () {
 		                   $scope.message = 'Invalid credentials.';
 		               });	

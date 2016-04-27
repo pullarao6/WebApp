@@ -34,7 +34,7 @@ angular.module('users')
                $http.post(urls.BASE_API + '/signup', data).success(success).error(error)
            },
            signin: function (data, success, error) {
-               $http.post('api/users/authenticate', data).success(success).error(error)
+               $http.post(urls.BASE_API + '/authenticate', data).success(success).error(error)
            },
            logout: function (success) {
                tokenClaims = {};

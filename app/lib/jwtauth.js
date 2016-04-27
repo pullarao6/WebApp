@@ -2,7 +2,7 @@ var jwt = require('jsonwebtoken');
 var config = require('../config/config.js');
 
 module.exports = function(req, res, next){	
-	var token = (req.body && req.body.access_token) || req.query.access_token || req.headers["Authorization"];
+	var token = (req.body && req.body.access_token) || req.query.access_token || req.headers["x-access-token"];
 
 	if (token) {		   			     
 			// verifies secret and checks exp

@@ -23,9 +23,9 @@ router.post('/authenticate',userController.authenticate);
 router.post('/signup', userController.saveUser);
 
 router.put('/:id', function(req, res) {
+});
 
-	router.get('/secret', jwtauth, function(req, res,next) {	
-		userController.getUserById(req, res);
-	});
+router.post('/secret', jwtauth, function(req, res,next) {	
+	userController.getUserById(req, res);
 });
 module.exports = router;

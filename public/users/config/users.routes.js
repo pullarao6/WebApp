@@ -13,7 +13,7 @@ angular.module('users').config([ '$routeProvider', '$httpProvider', function($ro
 		       'request': function (config) {
 		           config.headers = config.headers || {};
 		           if ($localStorage.token) {
-		               config.headers.Authorization = 'Bearer ' + $localStorage.token;
+		               config.headers['x-access-token'] = $localStorage.token;
 		           }
 		           return config;
 		       }
