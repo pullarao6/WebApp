@@ -1,5 +1,5 @@
 angular.module('users')
-   .factory('Auth', ['$http', '$localStorage', 'urls', function ($http, $localStorage, urls) {
+   .factory('Auth', ['$http', '$localStorage','urls', function ($http, $localStorage, urls) {
        function urlBase64Decode(str) {
            var output = str.replace('-', '+').replace('_', '/');
            switch (output.length % 4) {
@@ -31,10 +31,10 @@ angular.module('users')
 
        return {
            signup: function (data, success, error) {
-               $http.post(urls.BASE_API + '/signup', data).success(success).error(error)
+               $http.post('/api/users/signup', data).success(success).error(error)
            },
            signin: function (data, success, error) {
-               $http.post(urls.BASE_API + '/authenticate', data).success(success).error(error)
+               $http.post('/api/users/authenticate', data).success(success).error(error)
            },
            logout: function (success) {
                tokenClaims = {};

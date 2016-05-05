@@ -7,16 +7,29 @@
         <span class="icon-bar" style="background-color:#fff"></span>                        
       </button>
       <a class="navbar-brand" href="">My App</a>
+      <form role='search' class='navbar-form navbar-left'>
+    	<div class="form-group">
+         	<input type="text" placeholder="Search" class="form-control">
+         </div>
+      </form>
     </div>
-    <div class="collapse navbar-collapse" id="myNavbar">
+    <div class="collapse navbar-collapse" id="myNavbar">    
       <ul class="nav navbar-nav navbar-right">
-		<li><a href="##myPage">HOME</a></li>
-        <li><a href="##about">ABOUT</a></li>        
-        <li><a href="##clients">CLIENT</a></li>        
-        <li><a href="##contact">CONTACT</a></li>
+		<li><a href="##myPage">HOME</a></li>                          
+        <li><a href="##contact">CONTACT</a></li>        
         <li><a href="#users/signup"><span class="glyphicon glyphicon-user"></span> Register</a></li>
         <li><a href="#users/signin"><span class="glyphicon glyphicon-log-in"></span> SignIn</a></li>
-      </ul>
+        <li class="dropdown">
+                    <a data-toggle="dropdown" class="dropdown-toggle" href="#">Messages <b class="caret"></b></a>
+                    <ul role="menu" class="dropdown-menu">
+                        <li><a href="#">Inbox</a></li>
+                        <li><a href="#">Drafts</a></li>
+                        <li><a href="#">Sent Items</a></li>
+                        <li class="divider"></li>
+                        <li><a href="#">Trash</a></li>
+                    </ul>
+                </li>
+      </ul>      
     </div>
   </div>
 </nav>

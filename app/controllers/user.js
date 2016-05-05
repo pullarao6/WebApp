@@ -5,6 +5,17 @@ var config = require('../config/config.js');
 var jwt = require('jsonwebtoken');
 var Manf = myapp_common.manf;
 
+var getErrorMessage = function(err) {
+	if (err.errors) {
+		for ( var errName in err.errors) {
+			if (err.errors[errName].message)
+				return err.errors[errName].message;
+		}
+	} else {
+		return 'Unknown server error';
+	}
+};
+	
 // create a new user
 exports.saveUser = function(req, res, next) {
 	logger.info("Request Received for saving a user::"+req.body.email,{request:req.body});

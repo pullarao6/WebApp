@@ -2,8 +2,8 @@
   "name": "myapp",
   "version": "0.0.0",
   "private": true,
-  "scripts": {    
-    "start": "node ./bin/cluster",
+  "scripts": {
+    "start": "node ./bin/www",
     "test": "./node_modules/.bin/mocha --recursive -R xunit test/ > test-reports.xml"
   },
   "dependencies": {
@@ -21,7 +21,11 @@
     "express-session": "^1.13.0",
     "helloworld": "git+https://git@github.com/pullarao6/HelloWorld.git#test",
     "jade": "~1.11.0",
+    "jasmine-core": "^2.4.1",
     "jsonwebtoken": "^5.7.0",
+    "karma": "^0.13.22",
+    "karma-jasmine": "^1.0.2",
+    "karma-phantomjs-launcher": "^1.0.0",
     "mocha": "^2.4.5",
     "moment": "^2.11.1",
     "mongodb": "^2.1.2",
@@ -34,6 +38,7 @@
     "passport-http": "^0.3.0",
     "passport-http-bearer": "^1.0.1",
     "passport-local": "^1.0.0",
+    "phantomjs-prebuilt": "^2.1.7",
     "request": "^2.69.0",
     "serve-favicon": "^2.3.0",
     "should": "^8.2.2",
