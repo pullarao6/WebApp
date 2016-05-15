@@ -16,7 +16,16 @@ var http_port = normalizePort(process.env.PORT || config.http.port);
 var https_port = normalizePort(process.env.PORT || config.https.port);
 var options = {
 	key : fs.readFileSync(__dirname + '/../trust-store/myapp.key'),
-	cert : fs.readFileSync(__dirname + '/../trust-store/myapp.crt')
+	cert : fs.readFileSync(__dirname + '/../trust-store/myapp.crt'),
+	ciphers: [
+    "ECDHE-RSA-AES128-GCM-SHA256",
+    "DHE-RSA-AES128-SHA256",
+    "AES128-GCM-SHA256",
+    "HIGH",
+    "!MD5",
+    "!aNULL"
+].join(':'),
+	honorCipherOrder: true
 };
 
 //database.makeDBConnection(function(db){

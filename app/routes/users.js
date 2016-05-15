@@ -12,20 +12,20 @@ router.use(function(req, res, next) {
 	next();
 });
 
-router.get('/:id', jwtauth, function(req, res,next) {	
+router.get('/:id', jwtauth, function(req, res,next) {
 	userController.getUserById(req, res);
 });
 
-//route for authentication and for issuing json web token 
+//route for authentication and for issuing json web token
 router.post('/authenticate',userController.authenticate);
 
 //route for signing up new users
-router.post('/signup', userController.saveUser);
+router.post('/', userController.saveUser);
 
 router.put('/:id', function(req, res) {
 });
 
-router.post('/secret', jwtauth, function(req, res,next) {	
+router.post('/secret', jwtauth, function(req, res,next) {
 	userController.getUserById(req, res);
 });
 module.exports = router;

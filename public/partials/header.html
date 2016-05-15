@@ -4,7 +4,7 @@
       <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
         <span class="icon-bar" style="background-color:#fff"></span>
         <span class="icon-bar" style="background-color:#fff"></span>
-        <span class="icon-bar" style="background-color:#fff"></span>                        
+        <span class="icon-bar" style="background-color:#fff"></span>
       </button>
       <a class="navbar-brand" href="">My App</a>
       <form role='search' class='navbar-form navbar-left'>
@@ -13,23 +13,22 @@
          </div>
       </form>
     </div>
-    <div class="collapse navbar-collapse" id="myNavbar">    
+    <div class="collapse navbar-collapse" id="myNavbar">
       <ul class="nav navbar-nav navbar-right">
-		<li><a href="##myPage">HOME</a></li>                          
-        <li><a href="##contact">CONTACT</a></li>        
-        <li><a href="#users/signup"><span class="glyphicon glyphicon-user"></span> Register</a></li>
-        <li><a href="#users/signin"><span class="glyphicon glyphicon-log-in"></span> SignIn</a></li>
-        <li class="dropdown">
+		<li><a href="##myPage">HOME</a></li>
+        <li><a href="##contact">CONTACT</a></li>
+        <li ng-hide='tokenClaims.manfid'><a href="#users/signup"><span class="glyphicon glyphicon-user"></span> Register</a></li>
+        <li ng-hide='tokenClaims.manfid'><a href="#users/signin"><span class="glyphicon glyphicon-log-in"></span> SignIn</a></li>
+        <li ng-show='tokenClaims.manfid' class="dropdown">
                     <a data-toggle="dropdown" class="dropdown-toggle" href="#">Messages <b class="caret"></b></a>
                     <ul role="menu" class="dropdown-menu">
-                        <li><a href="#">Inbox</a></li>
-                        <li><a href="#">Drafts</a></li>
-                        <li><a href="#">Sent Items</a></li>
-                        <li class="divider"></li>
-                        <li><a href="#">Trash</a></li>
+                        <li><a href="#/dashboard">Profile</a></li>
+                        <li><a href="#">DEF</a></li>
+                        <li><a href="#">GHI</a></li>
+                        <li><a ng-click="logout()">logout</a></li>
                     </ul>
                 </li>
-      </ul>      
+      </ul>
     </div>
   </div>
 </nav>

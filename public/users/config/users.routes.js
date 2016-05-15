@@ -1,13 +1,17 @@
-angular.module('users').config([ '$routeProvider', '$httpProvider', function($routeProvider,$httpProvider) {	
-	$routeProvider.when('/users/signup', {		
+angular.module('users').config([ '$routeProvider', '$httpProvider', function($routeProvider,$httpProvider) {
+	$routeProvider.when('/users/signup', {
 		templateUrl : 'users/views/users.view.signup.html',
 		controller : 'signupController'
-	});
-	$routeProvider.when('/users/signin', {		
+	}).
+	when('/users/signin', {
 		templateUrl : 'users/views/users.view.signin.html',
 		controller : 'signinController'
+	}).
+	when('/dashboard',{
+		templateUrl : 'users/views/users.view.dashboard.html',
+		controller : 'dashboardController'
 	});
-	
+
 	$httpProvider.interceptors.push(['$q', '$location', '$localStorage', function ($q, $location, $localStorage) {
 		   return {
 		       'request': function (config) {
@@ -19,7 +23,7 @@ angular.module('users').config([ '$routeProvider', '$httpProvider', function($ro
 		       }
 		       /*'responseError': function (response) {
 		           if (response.status === 401 || response.status === 403) {
-		               //$location.path('/users/signin');
+			               //$location.path('/users/signin');
 		           }
 		           return $q.reject(response);
 		       }*/
